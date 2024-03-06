@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<style>
+    .download-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .download-items {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 300px;
+        height: 750px;
+        margin: 0 10px;
+    }
+
+    .download-items__thumb {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .download-items__btn {
+        background-color: #04AA6D;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+</style>
+
+<body>
+    <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+            <div
+                class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1
+                        class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
+                        DOWNLOAD IMAGE & VIDEO PRIVATE INSTAGRAM ACCOUNT
+                    </h1>
+                    <div class="space-y-4 md:space-y-6">
+                        <div>
+                            <label for="link"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Private account
+                                link</label>
+                            <input type="text" name="link" id="link" onblur="getUrl()"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="https://www.instagram.com/htthuhang.13_08/" required="">
+                        </div>
+                        <div>
+                            <label for="json" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Paste
+                                the text
+                                here</label>
+                            <textarea id="json" rows="4"
+                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Write your copy text hear...."></textarea>
+                        </div>
+
+                        <button type="submit" onclick="onSubmit()"
+                            class="w-full focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Download
+                            all secret</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="download">
+        </div>
+
+    </section>
+</body>
+
+<script>
+    async function getUrl() {
+        const link = document.getElementById('link').value;
+        const body = {
+            link: link
+        }
+        const response = await fetch(`/get-url?`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        const responseData = await response.json();
+        if (responseData.data) {
+            window.open(
+                responseData.data,
+                "Insta",
+                "height=600,width=1200,left")
+        }
+    }
+
+    async function onSubmit() {
+        const link = document.getElementById('link').value;
+        const json = document.getElementById('json');
+        const body = {
+            q: link,
+            t: 'media',
+            lang: 'en',
+            html: json.value
+        }
+        const response = await fetch(`/get-data`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        const responseData = await response.json();
+        const { data } = responseData
+        if (data) {
+            const download = document.getElementById('download');
+            download.innerHTML = data
+            const deleteHtml = document.getElementsByClassName('back-home')[0]
+            const lazyImage = [].slice.call(document.getElementsByClassName("lazy"))
+            deleteHtml.remove();
+            lazyImage.map((item) => {
+                item.src = item.dataset.src
+            })
+            download.scrollIntoView({ behavior: "smooth", inline: "nearest" })
+
+        }
+
+    }
+
+</script>
+
+</html>
